@@ -1,0 +1,33 @@
+[format]
+	signoff = true
+	thread = true
+[color]
+	diff = auto
+	status = auto
+	branch = auto
+	interactive = auto
+	ui = true
+	pager = true
+[alias]
+	s = status
+	d = diff
+	l = log --decorate=short
+	w = whatchanged
+[log]
+	decorate = short
+[push]
+	default = simple
+[http]
+	sslVerify = true
+	sslCAinfo = /etc/ssl/certs/ca-certificates.crt
+	sslBackend = openssl
+[diff "astextplain"]
+	textconv = astextplain
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[credential]
+	helper = manager
+

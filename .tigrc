@@ -1,0 +1,4 @@
+#set main-view = line-number:no,interval=5 id:no date:default author:full,width=20 commit-title:yes,refs,overflow=no
+set commit-order = default
+#set main-options = -n1000
+set show-changes = false
