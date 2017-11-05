@@ -1,0 +1,58 @@
+#!/bin/bash
+
+SETUP_DIR=/setup
+GIT_SETUP=$HOME/.gitconfig
+
+if [ -f $GIT_SETUP ]; then
+	CUR_USR_NAME=$(grep -P "^\tname" $GIT_SETUP)
+	if [[ ! -z $CUR_USR_NAME ]]; then
+		CUR_USR_NAME=${CUR_USR_NAME#*=}
+		read -p "Change git name ($CUR_USR_NAME)? (y/N) " ANS
+		if [[ $ANS = 'y' ]]; then
+			read -p "git name = " USR_NAME
+			sed -i "s/\tname.*/\tname = $USR_NAME/" $GIT_SETUP
+			ANS='n';
+		fi
+	else
+		read -p "git name = " USR_NAME
+		if grep -qP "^\[user\]" $GIT_SETUP; then
+			sed -i "s/\(^\[user\]\)/\1\n\tname = $USR_NAME/" $GIT_SETUP
+		else
+			sed -i "1s/^/\[user\]\n\tname = $USER_NAME\n/" $GIT_SETUP
+		fi
+	fi
+	CUR_USR_EMAIL=$(grep -P "^\temail" $GIT_SETUP)
+	if [[ ! -z $CUR_USR_EMAIL ]]; then
+		CUR_USR_EMAIL=${CUR_USR_EMAIL#*=}
+		read -p "Change git email ($CUR_USR_EMAIL)? (y/N) " ANS
+		if [[ $ANS = 'y' ]]; then
+			read -p "git email = " USR_EMAIL
+			sed -i "s/\tname.*/\tname = $USR_NAME/" $GIT_SETUP
+			ANS='n';
+		fi
+	else
+		read -p "git email = " USR_EMAIL
+		if grep -qP "^\[user\]" $GIT_SETUP; then
+			sed -i "s/\(^\[user\]\)/\1\n\temail = $USR_EMAIL/" $GIT_SETUP
+		else
+			sed -i "1s/^/\[user\]\n\temail = $USER_EMAIL\n/" $GIT_SETUP
+		fi
+	fi
+fi
+
+if [ ! -d $SETUP_DIR ]; then
+	sudo mkdir $SETUP_DIR
+	sudo chown $USER:$USER $SETUP_DIR
+fi
+
+if [ ! -d $SETUP_DIR ]; then
+	echo "Unable to find /setup directory"
+	exit 1
+fi
+
+cd $SETUP_DIR
+if ! git status > /dev/null; then
+	git clone git@github.com:thinhjb/setup.git .
+else
+	git pull
+fi
